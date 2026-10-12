@@ -1044,6 +1044,7 @@
      6. 一键排版：把主题样式作为内联 style 烤进 DOM（公众号直接可识别）
      ====================================================================== */
   function bake(silent){
+    console.log('[DEBUG] bake called:', { silent, hasContent: editor.textContent.trim().length > 0, hasImg: !!editor.querySelector('img'), textLen: editor.textContent.trim().length });
     if (!editor.textContent.trim() && !editor.querySelector('img')) {
       if (!silent) toast('还没有内容可以排版');
       return;
@@ -3680,8 +3681,16 @@
     state.customAccent = c;
     $('#accentPick').value = c;
     $('#accentHex').textContent = c;
-    console.log('[DEBUG] swatch click:', { color: c, hStyle: state.hStyle, accent: state.customAccent });
+    console.log('[DEBUG] swatch click:', { color: c, hStyle: state.hStyle, hasContent: editor.textContent.trim().length > 0 });
     applyVisual(); saveCfg();
+    // 直接更新标题内联样式，不等 bake
+    if (state.hStyle === 'plainColor'){
+      $$('.editor h2, .editor h3').forEach(h => {
+        const s = h.getAttribute('style') || '';
+        h.setAttribute('style', s.replace(/color:[^;]+/, 'color:' + c) || 'color:' + c + ';');
+        console.log('[DEBUG] updated h2/h3 inline:', h.tagName, h.getAttribute('style'));
+      });
+    }
     if (editor.textContent.trim() || editor.querySelector('img')) bake(true);
     syncSwatches();
     toast('主题色 → ' + c);
