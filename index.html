@@ -3678,7 +3678,8 @@
     state.customAccent = c;
     $('#accentPick').value = c;
     $('#accentHex').textContent = c;
-    applyVisual(); saveCfg(); scheduleBake();
+    applyVisual(); saveCfg();
+    if (editor.textContent.trim() || editor.querySelector('img')) bake(true);
     syncSwatches();
     toast('主题色 → ' + c);
   });
@@ -3738,7 +3739,8 @@
         syncSwatches();
       }
     }
-    applyVisual(); saveCfg(); scheduleBake();
+    applyVisual(); saveCfg();
+    if (editor.textContent.trim() || editor.querySelector('img')) bake(true);
   });
 
   $('#fonts').addEventListener('click', e => {
