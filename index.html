@@ -3679,11 +3679,14 @@
     $('#accentPick').value = c;
     $('#accentHex').textContent = c;
     applyVisual(); saveCfg();
+    console.log('[DEBUG] swatch: color=' + c + ' hStyle=' + state.hStyle);
     // 直接更新标题内联样式，不等 bake
     if (state.hStyle === 'plainColor'){
       $$('.editor h2, .editor h3').forEach(h => {
         const s = h.getAttribute('style') || '';
-        h.setAttribute('style', s.replace(/color:[^;]+/, 'color:' + c) || 'color:' + c + ';');
+        const newS = s.replace(/color:[^;]+/, 'color:' + c) || 'color:' + c + ';';
+        console.log('[DEBUG] swatch h2/h3:', h.tagName, 'old:', s, 'new:', newS);
+        h.setAttribute('style', newS);
       });
     }
     if (editor.textContent.trim() || editor.querySelector('img')) bake(true);
@@ -3769,15 +3772,18 @@
   $('#hstyles').addEventListener('click', e => {
     const b = e.target.closest('.chip'); if (!b) return;
     state.hStyle = b.dataset.h; syncControls(); applyVisual(); saveCfg();
-    // 直接更新标题内联样式
+    // 强制重排所有标题
     const c = cfg();
+    console.log('[DEBUG] hstyles: hStyle=' + state.hStyle + ' accent=' + c.accent + ' head=' + c.head);
     $$('.editor h2, .editor h3').forEach(h => {
       const isColor = state.hStyle === 'plainColor';
       const col = isColor ? c.accent : c.head;
       const wt = isColor ? 600 : (h.tagName === 'H2' ? 700 : 600);
-      const st = (h.getAttribute('style') || '').replace(/color:[^;]+/, 'color:' + col)
-        .replace(/font-weight:[^;]+/, 'font-weight:' + wt)
-        + (isColor && !/text-align/.test(h.getAttribute('style') || '') ? 'text-align:center;' : '');
+      const oldStyle = h.getAttribute('style') || '';
+      let st = oldStyle.replace(/color:[^;]+/, 'color:' + col);
+      st = st.replace(/font-weight:[^;]+/, 'font-weight:' + wt);
+      if (isColor && !/text-align/.test(st)) st += 'text-align:center;';
+      console.log('[DEBUG] h2/h3:', h.tagName, 'old:', oldStyle, 'new:', st);
       h.setAttribute('style', st);
     });
     if (editor.textContent.trim() || editor.querySelector('img')) bake(true);
