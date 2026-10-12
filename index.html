@@ -949,7 +949,6 @@
      ====================================================================== */
   function applyVisual(){
     const c = cfg();
-    console.log('[DEBUG] applyVisual:', { accent: c.accent, hStyle: c.hStyle, state: { customAccent: state.customAccent, hStyle: state.hStyle } });
     const s = editor.style;
     s.setProperty('--fs', c.fs + 'px');
     s.setProperty('--lh', c.lh);
@@ -1044,7 +1043,6 @@
      6. 一键排版：把主题样式作为内联 style 烤进 DOM（公众号直接可识别）
      ====================================================================== */
   function bake(silent){
-    console.log('[DEBUG] bake called:', { silent, hasContent: editor.textContent.trim().length > 0, hasImg: !!editor.querySelector('img'), textLen: editor.textContent.trim().length });
     if (!editor.textContent.trim() && !editor.querySelector('img')) {
       if (!silent) toast('还没有内容可以排版');
       return;
@@ -1161,7 +1159,6 @@
           const isColor = c.hStyle === 'plainColor';
           const col = isColor ? accent : head;
           const wt  = isColor ? 600 : fw;
-          console.log('[DEBUG] H2/H3 bake:', { t, isColor, col, accent, head, hStyle: c.hStyle });
           let st = 'margin:' + mtop(tMul) + 'px 0 ' + mbot(bMul) + 'px;' +
             'font-family:' + c.headFont + ';font-size:' + fs + 'px;font-weight:' + wt + ';line-height:1.5;' +
             'color:' + col + ';letter-spacing:.4px;word-break:break-word;' +
@@ -3681,14 +3678,12 @@
     state.customAccent = c;
     $('#accentPick').value = c;
     $('#accentHex').textContent = c;
-    console.log('[DEBUG] swatch click:', { color: c, hStyle: state.hStyle, hasContent: editor.textContent.trim().length > 0 });
     applyVisual(); saveCfg();
     // 直接更新标题内联样式，不等 bake
     if (state.hStyle === 'plainColor'){
       $$('.editor h2, .editor h3').forEach(h => {
         const s = h.getAttribute('style') || '';
         h.setAttribute('style', s.replace(/color:[^;]+/, 'color:' + c) || 'color:' + c + ';');
-        console.log('[DEBUG] updated h2/h3 inline:', h.tagName, h.getAttribute('style'));
       });
     }
     if (editor.textContent.trim() || editor.querySelector('img')) bake(true);
