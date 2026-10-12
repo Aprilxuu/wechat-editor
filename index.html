@@ -1159,6 +1159,7 @@
           const isColor = c.hStyle === 'plainColor';
           const col = isColor ? accent : head;
           const wt  = isColor ? 600 : fw;
+          console.log('[DEBUG] H2/H3 bake:', { t, isColor, col, accent, head, hStyle: c.hStyle });
           let st = 'margin:' + mtop(tMul) + 'px 0 ' + mbot(bMul) + 'px;' +
             'font-family:' + c.headFont + ';font-size:' + fs + 'px;font-weight:' + wt + ';line-height:1.5;' +
             'color:' + col + ';letter-spacing:.4px;word-break:break-word;' +
@@ -3678,6 +3679,7 @@
     state.customAccent = c;
     $('#accentPick').value = c;
     $('#accentHex').textContent = c;
+    console.log('[DEBUG] swatch click:', { color: c, hStyle: state.hStyle, accent: state.customAccent });
     applyVisual(); saveCfg();
     if (editor.textContent.trim() || editor.querySelector('img')) bake(true);
     syncSwatches();
