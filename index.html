@@ -3752,6 +3752,13 @@
       }
     }
     applyVisual(); saveCfg();
+    // 直接更新标题内联样式，不等 bake
+    if (state.hStyle === 'plainColor'){
+      $$('.editor h2, .editor h3').forEach(h => {
+        const s = h.getAttribute('style') || '';
+        h.setAttribute('style', s.replace(/color:[^;]+/, 'color:' + newColor) || 'color:' + newColor + ';');
+      });
+    }
     if (editor.textContent.trim() || editor.querySelector('img')) bake(true);
   });
 
