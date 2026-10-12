@@ -949,6 +949,7 @@
      ====================================================================== */
   function applyVisual(){
     const c = cfg();
+    console.log('[DEBUG] applyVisual:', { accent: c.accent, hStyle: c.hStyle, state: { customAccent: state.customAccent, hStyle: state.hStyle } });
     const s = editor.style;
     s.setProperty('--fs', c.fs + 'px');
     s.setProperty('--lh', c.lh);
