@@ -3774,6 +3774,17 @@
   $('#hstyles').addEventListener('click', e => {
     const b = e.target.closest('.chip'); if (!b) return;
     state.hStyle = b.dataset.h; syncControls(); applyVisual(); saveCfg();
+    // 直接更新标题内联样式
+    const c = cfg();
+    $$('.editor h2, .editor h3').forEach(h => {
+      const isColor = state.hStyle === 'plainColor';
+      const col = isColor ? c.accent : c.head;
+      const wt = isColor ? 600 : (h.tagName === 'H2' ? 700 : 600);
+      const st = (h.getAttribute('style') || '').replace(/color:[^;]+/, 'color:' + col)
+        .replace(/font-weight:[^;]+/, 'font-weight:' + wt)
+        + (isColor && !/text-align/.test(h.getAttribute('style') || '') ? 'text-align:center;' : '');
+      h.setAttribute('style', st);
+    });
     if (editor.textContent.trim() || editor.querySelector('img')) bake(true);
   });
   $$('[data-toggle]').forEach(b => b.addEventListener('click', () => {
